@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: youtubeclone
+  labels:
+    app: youtubeclone
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: youtubeclone
+  template:
+    metadata:
+      labels:
+        app: youtubeclone
+    spec:
+      containers:
+      - name: youtubeclone
+        image: harshal.azurecr.io/youtubeclone:latest
+        ports:
+        - containerPort: 3000
+        imagePullPolicy: Always
+      imagePullSecrets:
+      - name: acr-secret
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: youtubeclone-service
+spec:
+  selector:
+    app: youtubeclone
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+  type: LoadBalancer
